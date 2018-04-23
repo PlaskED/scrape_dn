@@ -4,7 +4,7 @@ from html.parser import HTMLParser
 interesting = {
     'data-page-title':'',
     'data-article-title':'',
-    'article-image':'',
+    'data-article-image':'',
     'data-authors':'',
     'data-article-description':'',
     'data-article-image':'',
@@ -62,10 +62,11 @@ class MyHTMLParser(HTMLParser):
             #print("Want to parse this data: ", data)
 
     def write_article(self):
-        print(self.article)
+        #print(self.article)
         page_title = self.article['data-page-title']
         article_title = self.article['data-article-title']
-        img_url = self.article['article_image'] if 'article-image' in self.article else ''
+        img_url = self.article['data-article-image'] if 'data-article-image' in self.article else ''
+        print(img_url)
         filename = page_title.replace(' ', '_').lower() + '.html'
         with open(filename, 'w') as f:
             f.write('<html><head><title>{}</title></head>'.format(page_title))
@@ -76,18 +77,21 @@ class MyHTMLParser(HTMLParser):
                 f.write('<p>{}</p>'.format(item))
             f.write('</body></html>')
             
-
-if len(sys.argv) < 2:
-    print('Usage: python3 scrape_dn.py urls')
-else:
-    urls = sys.argv[1:]
-    for url in urls:
-        r = requests.get(url)
-        if r.status_code is 200:
-            parser = MyHTMLParser()
-            parser.feed(r.text)
-            parser.write_article()
-            parser.close()
-        else:
-            print('Request failed on url %, status code %', url, r.status_code)
+def main():
+    if len(sys.argv) < 2:
+        print('Usage: python3 scrape_dn.py urls')
+    else:
+        urls = sys.argv[1:]
+        for url in urls:
+            r = requests.get(url)
+            if r.status_code is 200:
+                parser = MyHTMLParser()
+                parser.feed(r.text)
+                parser.write_article()
+                parser.close()
+            else:
+                print('Request failed on url %, status code %', url, r.status_code)
+            
+if __name__ == "__main__":
+    main()
 
