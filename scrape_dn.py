@@ -68,14 +68,23 @@ class MyHTMLParser(HTMLParser):
         img_url = self.article['data-article-image'] if 'data-article-image' in self.article else ''
         print(img_url)
         filename = page_title.replace(' ', '_').lower() + '.html'
+
         with open(filename, 'w') as f:
-            f.write('<html><head><title>{}</title></head>'.format(page_title))
-            f.write('<body><h1>{}</h1>'.format(article_title))
+            f.write('<html>\n<head>\n')
+            f.write('<link rel=\"stylesheet\"')
+            f.write('href=\"https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css\">\n')
+            f.write('<title>{}</title>\n</head>\n'.format(page_title))
+            f.write('<body><div class="container">\n<h1>{}</h1>\n'.format(article_title))
             if len(img_url) > 0:
-                f.write('<img src="{}">'.format(img_url))
+                f.write('<img class=\"responsive-img\" src=\"{}\">'.format(img_url))
+
+                
+            text = ''
             for item in self.article['body']:
-                f.write('<p>{}</p>'.format(item))
-            f.write('</body></html>')
+              #  if len(item.replace(' ','')) != 0:
+                text += item
+            f.write('<p class="flow-text">{}</p>\n'.format(text))
+            f.write('</div></body>\n</html>')
             
 def main():
     if len(sys.argv) < 2:
@@ -95,3 +104,9 @@ def main():
 if __name__ == "__main__":
     main()
 
+
+#Fixa något intuitivt taggningssystem för taggar vi inte vill ha, t.ex. taggnamn på "prenumera dn"
+#Fixa in filmer och slideshows
+#Snygga till texten
+#Centrering
+#
